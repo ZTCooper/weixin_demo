@@ -1,10 +1,20 @@
-weixin_demo
-=======
+# weixin_demo
 
-文件说明
------
+## List
 
-* [config.py](https://github.com/ZTCooper/weixin_demo/blob/master/config.py)   
+* [config](#0)
+* [获取openid](#1)  
+* [支付](#2)  
+* [支付回调](#3)  
+* [提现](#4)  
+    
+  
+</br>
+
+
+## Introduction
+  
+### <a id="0"></a> 配置必须参数（[config.py](https://github.com/ZTCooper/weixin_demo/blob/master/config.py)）   
 ```python
 # 配置必须参数 
 
@@ -28,8 +38,7 @@ WX_CERT_PATH = "path/to/apiclient_cert.pem"
 WX_KEY_PATH = "path/to/apiclient_key.pem.unsecure"
 ```
 
-
-* [obtain_openid_demo.py](https://github.com/ZTCooper/weixin_demo/blob/master/obtain_openid_demo.py)  
+### <a id="1"></a> 获取openid（[obtain_openid_demo.py](https://github.com/ZTCooper/weixin_demo/blob/master/obtain_openid_demo.py)）  
 ```python
 # 获取openid, 支付提现均需要
 
@@ -56,8 +65,8 @@ class OpenidUtils(object):
         return openid
 ```
 
-* [pay_demo.py](https://github.com/ZTCooper/weixin_demo/blob/master/pay_demo.py)  
-支付，即统一下单（官方文档此处不够清晰，可参考注释  
+### <a id="2"></a> 支付（[pay_demo.py](https://github.com/ZTCooper/weixin_demo/blob/master/pay_demo.py)）  
+即统一下单（官方文档此处不够清晰，可参考注释  
 ```python
 # 统一下单
 
@@ -148,7 +157,7 @@ def generate_bill(out_trade_no, fee, openid):
             return data
 ```
 
-* [notify_view_demo.py](https://github.com/ZTCooper/weixin_demo/blob/master/notify_view_demo.py)  
+### <a id="3"></a> 支付回调（[notify_view_demo.py](https://github.com/ZTCooper/weixin_demo/blob/master/notify_view_demo.py)）  
 支付回调接口方法  
 ```python
 # 统一下单回调处理
@@ -179,15 +188,23 @@ def payback(request):
                             content_type='text/xml', status=200)
 ```
 
-* [withdraw_demo.py](https://github.com/ZTCooper/weixin_demo/blob/master/withdraw_demo.py)  
-提现，即企业付款（无回调，需使用双向证书  
+### <a id="4"></a> 提现（[withdraw_demo.py](https://github.com/ZTCooper/weixin_demo/blob/master/withdraw_demo.py)）  
+即企业付款（无回调，需使用双向证书  
 登录微信商户平台(pay.weixin.qq.com)-->账户设置-->API安全-->证书下载  
 下载apiclient_cert.p12  
 python无法使用双向证书，使用openssl导出：  
-`openssl pkcs12 -clcerts -nokeys -in apiclient_cert.p12 -out apiclient_cert.pem`  
-`openssl pkcs12 -nocerts -in apiclient_cert.p12 -out apiclient_key.pem`  
-	导出apiclient_key.pem时需输入PEM phrase, 此后每次发起请求均要输入，可使用openssl解除：
-`openssl rsa -in apiclient_key.pem -out apiclient_key.pem.unsecure`  
+
+```bash
+openssl pkcs12 -clcerts -nokeys -in apiclient_cert.p12 -out apiclient_cert.pem
+```  
+```bash
+openssl pkcs12 -nocerts -in apiclient_cert.p12 -out apiclient_key.pem
+```  
+
+导出apiclient_key.pem时需输入PEM phrase, 此后每次发起请求均要输入，可使用openssl解除：
+```bash
+openssl rsa -in apiclient_key.pem -out apiclient_key.pem.unsecure
+```  
 
 ```python
 # 提现（企业付款
