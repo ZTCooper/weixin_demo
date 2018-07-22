@@ -4,8 +4,11 @@
 '''
 import xmltodict
 import requests
+import hashlib
+import random
+import string
 
-from config import APPID, MCHID, WX_CERT_PATH, WX_KEY_PATH
+from config import KEY, APPID, MCHID, WX_CERT_PATH, WX_KEY_PATH
 
 # 生成nonce_str
 def generate_randomStr():
