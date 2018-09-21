@@ -11,6 +11,17 @@ import string
 
 from config import APPID, MCHID, KEY, NOTIFY_URL
 
+# 生成订单号
+def generate_out_trade_no():
+    # 20位
+    seeds = '1234567890'
+    random_str = []
+    for i in range(6):
+        random_str.append(choice(seeds))
+    subfix =  ''.join(random_str)
+
+    return datetime.now().strftime("%Y%m%d%H%M%S") + subfix
+
 
 # 生成nonce_str
 def generate_randomStr():
@@ -49,7 +60,8 @@ def send_xml_request(url, param):
 # 统一下单
 def generate_bill(out_trade_no, fee, openid):
     url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
-    nonce_str = generate_randomStr()
+    nonce_str = generate_randomStr()		# 订单中加nonce_str字段记录（回调判断使用）
+    out_trade_no = generate_out_trade_no()     # 支付单号，只能使用一次，不可重复支付
     # 1. 参数
     param = {
         "appid": APPID,
