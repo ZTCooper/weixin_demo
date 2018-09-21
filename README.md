@@ -80,6 +80,17 @@ import string
 from config import APPID, MCHID, KEY, NOTIFY_URL
 
 
+# 生成订单号
+def generate_out_trade_no():
+    # 20位
+    seeds = '1234567890'
+    random_str = []
+    for i in range(6):
+        random_str.append(choice(seeds))
+    subfix =  ''.join(random_str)
+
+    return datetime.now().strftime("%Y%m%d%H%M%S") + subfix
+
 # 生成nonce_str
 def generate_randomStr():
     return ''.join(random.sample(string.ascii_letters + string.digits, 32))
@@ -180,6 +191,12 @@ def payback(request):
     elif return_code == 'SUCCESS':
         # 拿到这次支付的订单号
         out_trade_no = xmlmsg['xml']['out_trade_no']
+        # order = Order.objects.get(out_trade_no=out_trade_no)
+        if xmlmsg['xml']['nonce_str'] != order.nonce_str:
+            # 随机字符串不一致
+            return HttpResponse("""<xml><return_code><![CDATA[FAIL]]></return_code>
+                                        <return_msg><![CDATA[Signature_Error]]></return_msg></xml>""",
+                                content_type='text/xml', status=200)
 
         # 根据需要处理业务逻辑
 
