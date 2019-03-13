@@ -62,6 +62,13 @@ def generate_bill(out_trade_no, fee, openid):
     url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
     nonce_str = generate_randomStr()		# 订单中加nonce_str字段记录（回调判断使用）
     out_trade_no = generate_out_trade_no()     # 支付单号，只能使用一次，不可重复支付
+    
+    '''
+    order.out_trade_no = out_trade_no
+    order.nonce_str = nonce_str
+    order.save()
+    '''
+
     # 1. 参数
     param = {
         "appid": APPID,

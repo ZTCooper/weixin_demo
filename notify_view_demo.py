@@ -18,6 +18,7 @@ def payback(request):
         return HttpResponse("""<xml><return_code><![CDATA[FAIL]]></return_code>
                             <return_msg><![CDATA[Signature_Error]]></return_msg></xml>""",
                             content_type='text/xml', status=200)
+        
     elif return_code == 'SUCCESS':
         # 拿到这次支付的订单号
         out_trade_no = xmlmsg['xml']['out_trade_no']

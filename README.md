@@ -102,7 +102,7 @@ def generate_sign(param):
     ks = sorted(param.keys())
     # 参数排序
     for k in ks:
-        stringA += (k + '=' + param[k] + '&')
+        stringA += k + "=" + str(param[k]) + "&"
     # 拼接商户KEY
     stringSignTemp = stringA + "key=" + KEY
 
@@ -128,7 +128,15 @@ def send_xml_request(url, param):
 # 统一下单
 def generate_bill(out_trade_no, fee, openid):
     url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
-    nonce_str = generate_randomStr()
+    nonce_str = generate_randomStr()        # 订单中加nonce_str字段记录（回调判断使用）
+    out_trade_no = generate_out_trade_no()     # 支付单号，只能使用一次，不可重复支付
+    
+    '''
+    order.out_trade_no = out_trade_no
+    order.nonce_str = nonce_str
+    order.save()
+    '''
+
     # 1. 参数
     param = {
         "appid": APPID,
@@ -153,13 +161,14 @@ def generate_bill(out_trade_no, fee, openid):
             prepay_id = xmlmsg['xml']['prepay_id']
             # 时间戳
             timeStamp = str(int(time.time()))
-            # 5. 五个参数
+            # 5. 根据文档，六个参数，否则app提示签名验证失败，https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_12
             data = {
-                "appId": APPID,
-                "nonceStr": nonce_str,
-                "package": "prepay_id=" + prepay_id,
-                "signType": 'MD5',
-                "timeStamp": timeStamp,
+                "appid": APPID,
+                "partnerid": MCHID,
+                "prepayid": prepay_id,
+                "package": "Sign=WXPay",
+                "noncestr": nonce_str,
+                "timestamp": timeStamp,
             }
             # 6. paySign签名
             paySign = generate_sign(data)
